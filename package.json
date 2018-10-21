@@ -1,0 +1,24 @@
+{
+  "name": "grunt-init-wordpress",
+  "version": "1.0.0",
+  "description": "Grunt-init WordPress",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fixate/grunt-init-wordpress.git"
+  },
+  "author": "John Rodwell",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fixate/grunt-init-wordpress/issues"
+  },
+  "homepage": "https://github.com/fixate/grunt-init-wordpress#readme",
+  "dependencies": {
+    "fs": "0.0.1-security",
+    "http": "0.0.0",
+    "https": "^1.0.0"
+  }
+}

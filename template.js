@@ -2,11 +2,16 @@
  * grunt-init-wordpress
  * https://gruntjs.com/
  *
- * Copyright (c) 2013 Fixate, contributors
+ * Copyright (c) 2013 Fixate, contributors - modified by J.R.
  * Licensed under the MIT license.
  */
 
 'use strict';
+
+// File system and HTTP node libraries
+var http = require('http');
+var https = require('https');
+var fs = require('fs');
 
 // Basic template description.
 exports.description = 'Create a WordPress project.';
@@ -54,15 +59,39 @@ exports.template = function(grunt, init, done) {
       warning: 'Must be only letters, numbers, dashes, dots or underscores.',
       default: 'my_theme'
     },
-    init.prompt('title', 'My Theme'),
+    init.prompt('title', 'J.R. Theme'),
     init.prompt('version', '1.0.0'),
-    init.prompt('homepage'),
+    init.prompt('homepage', 'index.php'),
     init.prompt('author_name'),
-    init.prompt('author_email'),
-    init.prompt('author_url')
+    init.prompt('author_email', 'john@nicetechnology.co.uk'),
+    init.prompt('author_url'),
+    init.prompt('db_name'),
+    init.prompt('db_user', 'root'),
+    init.prompt('db_password', 'jr8073421'),
+    init.prompt('db_host', 'localhost')
   ], function(err, props) {
 
     props.keywords = [];
+
+	// Generate security keys via HTTP request...
+
+	https.get('https://api.wordpress.org/secret-key/1.1/salt', function(res) {
+        
+        var str = '';
+        //console.log('Response is '+res.statusCode);
+
+        res.on('data', function(chunk) {
+               str += chunk;
+         });
+
+        res.on('end', function() {
+             console.log(str);
+             props.security_keys = str;
+        });
+
+  	});
+
+	//props.security_keys = 'TEMPKEYS';
 
     // Files to copy (and process).
     var files = init.filesToCopy(props);
@@ -70,8 +99,11 @@ exports.template = function(grunt, init, done) {
     // Actually copy (and process) files.
     init.copyAndProcess(files, props, {noProcess: ['src/wp-includes/**/*', 'src/wp-admin/**/*', 'src/wp-content/plugins/**/*']});
 
-    // Generate pacakge.json file.
-    // init.writePackageJSON('package.json', props);
+    // Generate package.json file, used by npm and grunt.
+	init.writePackageJSON('package.json', {
+		node_version: '>= 0.10.0',
+		devDependencies: devDependencies
+	});
 
     // All done!
     done();
